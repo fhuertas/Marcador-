@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Marcador</h1>
+        <h1 contenteditable="true" id="tituloMarcador">Título</h1>
         <div>
             <span>Turno: <strong id="turno">Jugador 1</strong></span>
         </div>
@@ -19,47 +19,47 @@
         </div>
         <div class="jugadores">
             <div class="jugador">
-                <h2 id="j1-nombre">Jugador 1</h2>
+                <h2 contenteditable="true" id="j1-nombre">Jugador 1</h2>
                 <div>
-                    <span>Misión Principal: <span id="j1-prim">0</span></span>
+                    <span>Misiones principales: <span id="j1-prim">0</span></span>
                     <button onclick="ajustarPuntaje('j1-prim', 1)">+</button>
                     <button onclick="ajustarPuntaje('j1-prim', -1)">-</button>
                 </div>
                 <div>
-                    <span>Misiones Secundarias: <span id="j1-sec">0</span></span>
+                    <span>Misiones secundarias: <span id="j1-sec">0</span></span>
                     <button onclick="ajustarPuntaje('j1-sec', 1)">+</button>
                     <button onclick="ajustarPuntaje('j1-sec', -1)">-</button>
                 </div>
                 <div>
-                    <span>Puntos de Mando: <span id="j1-cmd">0</span></span>
+                    <span>Puntos de mando: <span id="j1-cmd">0</span></span>
                     <button onclick="ajustarPuntaje('j1-cmd', 1)">+</button>
                     <button onclick="ajustarPuntaje('j1-cmd', -1)">-</button>
                 </div>
                 <div>
-                    <span>Misión Secreta: <span id="j1-secM">0</span></span>
+                    <span>Misión secreta: <span id="j1-secM">0</span></span>
                     <button onclick="ajustarPuntaje('j1-secM', 1)">+</button>
                     <button onclick="ajustarPuntaje('j1-secM', -1)">-</button>
                 </div>
             </div>
             <div class="jugador">
-                <h2 id="j2-nombre">Jugador 2</h2>
+                <h2 contenteditable="true" id="j2-nombre">Jugador 2</h2>
                 <div>
-                    <span>Misión Principal: <span id="j2-prim">0</span></span>
+                    <span>Misiones principales: <span id="j2-prim">0</span></span>
                     <button onclick="ajustarPuntaje('j2-prim', 1)">+</button>
                     <button onclick="ajustarPuntaje('j2-prim', -1)">-</button>
                 </div>
                 <div>
-                    <span>Misiones Secundarias: <span id="j2-sec">0</span></span>
+                    <span>Misiones secundarias: <span id="j2-sec">0</span></span>
                     <button onclick="ajustarPuntaje('j2-sec', 1)">+</button>
                     <button onclick="ajustarPuntaje('j2-sec', -1)">-</button>
                 </div>
                 <div>
-                    <span>Puntos de Mando: <span id="j2-cmd">0</span></span>
+                    <span>Puntos de mando: <span id="j2-cmd">0</span></span>
                     <button onclick="ajustarPuntaje('j2-cmd', 1)">+</button>
                     <button onclick="ajustarPuntaje('j2-cmd', -1)">-</button>
                 </div>
                 <div>
-                    <span>Misión Secreta: <span id="j2-secM">0</span></span>
+                    <span>Misión secreta: <span id="j2-secM">0</span></span>
                     <button onclick="ajustarPuntaje('j2-secM', 1)">+</button>
                     <button onclick="ajustarPuntaje('j2-secM', -1)">-</button>
                 </div>
