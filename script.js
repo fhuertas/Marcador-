@@ -33,17 +33,19 @@ function editarNombres() {
 function copiarMarcador() {
     const marcador = `
 Turno: ${turnoActual}
-Ronda: ${rondaActual}
+Ronda de batalla: ${rondaActual}
 
 ${document.getElementById("j1-nombre").textContent}:
-  Prim: ${document.getElementById("j1-prim").textContent}
-  Sec: ${document.getElementById("j1-sec").textContent}
-  Cmd: ${document.getElementById("j1-cmd").textContent}
+  Misión Principal: ${document.getElementById("j1-prim").textContent}
+  Misiones Secundarias: ${document.getElementById("j1-sec").textContent}
+  Puntos de Mando: ${document.getElementById("j1-cmd").textContent}
+  Misión Secreta: ${document.getElementById("j1-secM").textContent}
 
 ${document.getElementById("j2-nombre").textContent}:
-  Prim: ${document.getElementById("j2-prim").textContent}
-  Sec: ${document.getElementById("j2-sec").textContent}
-  Cmd: ${document.getElementById("j2-cmd").textContent}
+  Misión Principal: ${document.getElementById("j2-prim").textContent}
+  Misiones Secundarias: ${document.getElementById("j2-sec").textContent}
+  Puntos de Mando: ${document.getElementById("j2-cmd").textContent}
+  Misión Secreta: ${document.getElementById("j2-secM").textContent}
 `;
     navigator.clipboard.writeText(marcador).then(() => alert("Marcador copiado"));
 }
@@ -53,7 +55,7 @@ function reiniciar() {
     if (confirm("¿Reiniciar marcador?")) {
         turnoActual = "Jugador 1";
         rondaActual = 1;
-        ["j1-prim", "j1-sec", "j1-cmd", "j2-prim", "j2-sec", "j2-cmd"].forEach(id => {
+        ["j1-prim", "j1-sec", "j1-cmd", "j1-secM", "j2-prim", "j2-sec", "j2-cmd", "j2-secM"].forEach(id => {
             document.getElementById(id).textContent = "0";
         });
         document.getElementById("turno").textContent = turnoActual;
