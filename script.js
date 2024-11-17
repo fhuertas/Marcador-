@@ -22,30 +22,37 @@ function ajustarPuntaje(id, cambio) {
 
 // Editar nombres
 function editarNombres() {
-    const j1 = prompt("Nombre Jugador 1:", document.getElementById("j1-nombre").textContent);
-    const j2 = prompt("Nombre Jugador 2:", document.getElementById("j2-nombre").textContent);
-    if (j1) document.getElementById("j1-nombre").textContent = j1;
-    if (j2) document.getElementById("j2-nombre").textContent = j2;
-    document.getElementById("turno").textContent = turnoActual === "Jugador 1" ? j1 : j2;
+    const j1 = document.getElementById("j1-nombre").textContent;
+    const j2 = document.getElementById("j2-nombre").textContent;
+    const nuevoJ1 = prompt("Nombre Jugador 1:", j1);
+    const nuevoJ2 = prompt("Nombre Jugador 2:", j2);
+    if (nuevoJ1) document.getElementById("j1-nombre").textContent = nuevoJ1;
+    if (nuevoJ2) document.getElementById("j2-nombre").textContent = nuevoJ2;
+    document.getElementById("turno").textContent = turnoActual === "Jugador 1" ? nuevoJ1 : nuevoJ2;
 }
 
-// Copiar marcador
+// Copiar marcador en formato ASCII
 function copiarMarcador() {
     const marcador = `
-Turno: ${turnoActual}
+==============================
+         ${document.getElementById("tituloMarcador").textContent}
+==============================
+Turno de: ${turnoActual}
 Ronda de batalla: ${rondaActual}
 
-${document.getElementById("j1-nombre").textContent}:
-  Misión Principal: ${document.getElementById("j1-prim").textContent}
-  Misiones Secundarias: ${document.getElementById("j1-sec").textContent}
-  Puntos de Mando: ${document.getElementById("j1-cmd").textContent}
-  Misión Secreta: ${document.getElementById("j1-secM").textContent}
+---------------- ${document.getElementById("j1-nombre").textContent} ----------------
+Misión principal: ${document.getElementById("j1-prim").textContent}
+Misiones secundarias: ${document.getElementById("j1-sec").textContent}
+Misión secreta: ${document.getElementById("j1-secM").textContent}
+Puntos de mando: ${document.getElementById("j1-cmd").textContent}
 
-${document.getElementById("j2-nombre").textContent}:
-  Misión Principal: ${document.getElementById("j2-prim").textContent}
-  Misiones Secundarias: ${document.getElementById("j2-sec").textContent}
-  Puntos de Mando: ${document.getElementById("j2-cmd").textContent}
-  Misión Secreta: ${document.getElementById("j2-secM").textContent}
+---------------- ${document.getElementById("j2-nombre").textContent} ----------------
+Misión principal: ${document.getElementById("j2-prim").textContent}
+Misiones secundarias: ${document.getElementById("j2-sec").textContent}
+Misión secreta: ${document.getElementById("j2-secM").textContent}
+Puntos de mando: ${document.getElementById("j2-cmd").textContent}
+
+==============================
 `;
     navigator.clipboard.writeText(marcador).then(() => alert("Marcador copiado"));
 }
@@ -62,5 +69,6 @@ function reiniciar() {
         document.getElementById("ronda").textContent = rondaActual;
         document.getElementById("j1-nombre").textContent = "Jugador 1";
         document.getElementById("j2-nombre").textContent = "Jugador 2";
+        document.getElementById("tituloMarcador").textContent = "Título";
     }
 }
