@@ -23,9 +23,9 @@
 
         .header {
             display: flex;
-            flex-wrap: wrap; /* Permite que los botones se ajusten si el título es muy grande */
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .header h1 {
@@ -48,17 +48,17 @@
         .turno {
             display: flex;
             align-items: center;
+            gap: 10px;
         }
 
-        .turno button {
-            margin-left: 10px;
+        .turno strong {
+            font-weight: bold;
         }
 
         .ronda {
             display: flex;
             align-items: center;
             gap: 5px;
-            flex-wrap: wrap;
         }
 
         .jugadores {
@@ -82,10 +82,6 @@
             margin: 10px 0;
         }
 
-        .fila span {
-            flex: 1;
-        }
-
         .control {
             display: flex;
             gap: 5px;
@@ -105,26 +101,31 @@
             background-color: #0056b3;
         }
 
-        .vertical .jugadores {
-            flex-direction: column;
+        .miniaturas-btn {
+            background-color: grey;
+            color: white;
         }
+
+        .miniaturas-btn.activo {
+            background-color: #007bff;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 contenteditable="true" id="tituloMarcador">Título</h1>
+            <h1 contenteditable="true" id="tituloMarcador" onkeypress="evitarSaltoLinea(event)">Título</h1>
             <div class="header-buttons">
                 <button onclick="reiniciar()">Reset</button>
                 <button onclick="copiarMarcador()">Compartir</button>
-                <button onclick="cambiarFormato()">Vertical</button>
             </div>
         </div>
         <div class="turno-ronda">
             <div class="turno">
-                <span>Turno: </span>
-                <span id="turno">Jugador 1</span>
+                <span>Turno:</span>
                 <button onclick="cambiarTurno()">Cambiar</button>
+                <strong id="turno">Jugador 1</strong>
             </div>
             <div class="ronda">
                 <span>Ronda de batalla:</span>
@@ -134,8 +135,17 @@
             </div>
         </div>
         <div class="jugadores">
+            <!-- Jugador 1 -->
             <div class="jugador">
-                <h2 contenteditable="true" id="j1-nombre">Jugador 1</h2>
+                <h2 contenteditable="true" id="j1-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)">Jugador 1</h2>
+                <div class="fila">
+                    <span>Puntos de mando:</span>
+                    <div class="control">
+                        <button onclick="ajustarPuntaje('j1-cmd', -1)">-</button>
+                        <span id="j1-cmd">0</span>
+                        <button onclick="ajustarPuntaje('j1-cmd', 1)">     +    </button>
+                    </div>
+                </div>
                 <div class="fila">
                     <span>Misión principal:</span>
                     <div class="control">
@@ -161,16 +171,25 @@
                     </div>
                 </div>
                 <div class="fila">
-                    <span>Puntos de mando:</span>
-                    <div class="control">
-                        <button onclick="ajustarPuntaje('j1-cmd', -1)">-</button>
-                        <span id="j1-cmd">0</span>
-                        <button onclick="ajustarPuntaje('j1-cmd', 1)">+</button>
-                    </div>
+                    <span>Miniaturas pintadas:</span>
+                    <button class="miniaturas-btn" id="j1-mini" onclick="alternarMiniaturas('j1-mini')">No</button>
+                </div>
+                <div class="fila">
+                    <span>Total:</span>
+                    <strong id="j1-total">0</strong>
                 </div>
             </div>
+            <!-- Jugador 2 -->
             <div class="jugador">
-                <h2 contenteditable="true" id="j2-nombre">Jugador 2</h2>
+                <h2 contenteditable="true" id="j2-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)">Jugador 2</h2>
+                <div class="fila">
+                    <span>Puntos de mando:</span>
+                    <div class="control">
+                        <button onclick="ajustarPuntaje('j2-cmd', -1)">-</button>
+                        <span id="j2-cmd">0</span>
+                        <button onclick="ajustarPuntaje('j2-cmd', 1)">+</button>
+                    </div>
+                </div>
                 <div class="fila">
                     <span>Misión principal:</span>
                     <div class="control">
@@ -196,122 +215,168 @@
                     </div>
                 </div>
                 <div class="fila">
-                    <span>Puntos de mando:</span>
-                    <div class="control">
-                        <button onclick="ajustarPuntaje('j2-cmd', -1)">-</button>
-                        <span id="j2-cmd">0</span>
-                        <button onclick="ajustarPuntaje('j2-cmd', 1)">+</button>
-                    </div>
+                    <span>Miniaturas pintadas:</span>
+                    <button class="miniaturas-btn" id="j2-mini" onclick="alternarMiniaturas('j2-mini')">No</button>
+                </div>
+                <div class="fila">
+                    <span>Total:</span>
+                    <strong id="j2-total">0</strong>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Variables globales
-        let turnoActual = 1;
-        let formatoVertical = false;
+        let turnoJugador = 1;
 
-        // Función para ajustar el puntaje
-        function ajustarPuntaje(id, delta) {
-            const elemento = document.getElementById(id);
-            let valor = parseInt(elemento.textContent, 10) || 0;
-            valor = Math.max(0, valor + delta);
-            elemento.textContent = valor;
-
-            // Guardar cambios en localStorage
-            guardarPuntajes();
-        }
-
-        // Función para ajustar la ronda
-        function ajustarRonda(delta) {
-            const elemento = document.getElementById('ronda');
-            let valor = parseInt(elemento.textContent, 10) || 0;
-            valor = Math.max(1, valor + delta);
-            elemento.textContent = valor;
-
-            // Guardar cambios en localStorage
-            guardarPuntajes();
-        }
-
-        // Cambiar el turno entre los jugadores
         function cambiarTurno() {
-            turnoActual = turnoActual === 1 ? 2 : 1;
+            turnoJugador = turnoJugador === 1 ? 2 : 1;
             actualizarTurno();
         }
 
-        // Actualizar el nombre del turno
         function actualizarTurno() {
-            const turnoJugador = turnoActual === 1 ? 'j1-nombre' : 'j2-nombre';
-            document.getElementById('turno').textContent = document.getElementById(turnoJugador).textContent;
+            const nombre = document.getElementById(`j${turnoJugador}-nombre`).textContent;
+            document.getElementById('turno').textContent = nombre;
         }
 
-        // Función para copiar el marcador al portapapeles
         function copiarMarcador() {
-            const marcador = `
-==============================
-${document.getElementById('tituloMarcador').textContent}
-==============================
-Turno de: ${document.getElementById('turno').textContent}
-Ronda de batalla: ${document.getElementById('ronda').textContent}
+            const titulo = document.getElementById('tituloMarcador').textContent;
+            const ronda = document.getElementById('ronda').textContent;
 
----------------- ${document.getElementById('j1-nombre').textContent} ----------------
-Misión principal: ${document.getElementById('j1-prim').textContent}
-Misiones secundarias: ${document.getElementById('j1-sec').textContent}
-Misión secreta: ${document.getElementById('j1-secM').textContent}
-Puntos de mando: ${document.getElementById('j1-cmd').textContent}
+            const jugador1 = obtenerDatosJugador(1);
+            const jugador2 = obtenerDatosJugador(2);
 
----------------- ${document.getElementById('j2-nombre').textContent} ----------------
-Misión principal: ${document.getElementById('j2-prim').textContent}
-Misiones secundarias: ${document.getElementById('j2-sec').textContent}
-Misión secreta: ${document.getElementById('j2-secM').textContent}
-Puntos de mando: ${document.getElementById('j2-cmd').textContent}
+            const texto = `
+==============================
+${titulo}
+==============================
+Turno de: ${jugador1.nombre}
+Ronda de batalla: ${ronda}
+
+------- ${jugador1.nombre} -------
+${jugador1.detalles}
+
+------- ${jugador2.nombre} -------
+${jugador2.detalles}
 `;
 
-            navigator.clipboard.writeText(marcador).then(() => {
-                alert('Marcador copiado al portapapeles.');
+            navigator.clipboard.writeText(texto.trim());
+        }
+
+        function obtenerDatosJugador(jugador) {
+            const nombre = document.getElementById(`j${jugador}-nombre`).textContent;
+            const cmd = document.getElementById(`j${jugador}-cmd`).textContent;
+            const prim = document.getElementById(`j${jugador}-prim`).textContent;
+            const sec = document.getElementById(`j${jugador}-sec`).textContent;
+            const secM = document.getElementById(`j${jugador}-secM`).textContent;
+            const mini = document.getElementById(`j${jugador}-mini`).textContent;
+            const total = document.getElementById(`j${jugador}-total`).textContent;
+
+            return {
+                nombre,
+                detalles: `Puntos de mando: ${cmd}
+Misión principal: ${prim}
+Misiones secundarias: ${sec}
+Misión secreta: ${secM}
+Miniaturas pintadas: ${mini}
+Total: ${total}`
+            };
+        }
+
+        function ajustarPuntaje(id, delta) {
+            const elemento = document.getElementById(id);
+            const valorActual = parseInt(elemento.textContent, 10);
+            const nuevoValor = Math.max(0, valorActual + delta);
+            elemento.textContent = nuevoValor;
+            actualizarTotales();
+            guardarEstado();
+        }
+
+        function ajustarRonda(delta) {
+            const rondaElemento = document.getElementById('ronda');
+            const valorActual = parseInt(rondaElemento.textContent, 10);
+            const nuevoValor = Math.max(1, valorActual + delta);
+            rondaElemento.textContent = nuevoValor;
+            guardarEstado();
+        }
+
+        function alternarMiniaturas(id) {
+            const boton = document.getElementById(id);
+            if (boton.textContent === "No") {
+                boton.textContent = "Sí";
+                boton.classList.add('activo');
+            } else {
+                boton.textContent = "No";
+                boton.classList.remove('activo');
+            }
+            actualizarTotales();
+            guardarEstado();
+        }
+
+        function actualizarTotales() {
+            for (let i = 1; i <= 2; i++) {
+                const prim = parseInt(document.getElementById(`j${i}-prim`).textContent, 10);
+                const sec = parseInt(document.getElementById(`j${i}-sec`).textContent, 10);
+                const secM = parseInt(document.getElementById(`j${i}-secM`).textContent, 10);
+                const miniaturas = document.getElementById(`j${i}-mini`).textContent === "Sí" ? 10 : 0;
+                const total = prim + sec + secM + miniaturas;
+                document.getElementById(`j${i}-total`).textContent = total;
+            }
+        }
+
+        function guardarEstado() {
+            const estado = {
+                ronda: document.getElementById('ronda').textContent,
+                jugadores: []
+            };
+
+            for (let i = 1; i <= 2; i++) {
+                estado.jugadores.push({
+                    nombre: document.getElementById(`j${i}-nombre`).textContent,
+                    cmd: document.getElementById(`j${i}-cmd`).textContent,
+                    prim: document.getElementById(`j${i}-prim`).textContent,
+                    sec: document.getElementById(`j${i}-sec`).textContent,
+                    secM: document.getElementById(`j${i}-secM`).textContent,
+                    mini: document.getElementById(`j${i}-mini`).textContent
+                });
+            }
+
+            localStorage.setItem('estadoMarcador', JSON.stringify(estado));
+        }
+
+        function cargarEstado() {
+            const estado = JSON.parse(localStorage.getItem('estadoMarcador'));
+            if (!estado) return;
+
+            document.getElementById('ronda').textContent = estado.ronda;
+
+            estado.jugadores.forEach((jugador, i) => {
+                const index = i + 1;
+                document.getElementById(`j${index}-nombre`).textContent = jugador.nombre;
+                document.getElementById(`j${index}-cmd`).textContent = jugador.cmd;
+                document.getElementById(`j${index}-prim`).textContent = jugador.prim;
+                document.getElementById(`j${index}-sec`).textContent = jugador.sec;
+                document.getElementById(`j${index}-secM`).textContent = jugador.secM;
+                const miniaturasBoton = document.getElementById(`j${index}-mini`);
+                miniaturasBoton.textContent = jugador.mini;
+                miniaturasBoton.classList.toggle('activo', jugador.mini === "Sí");
             });
+
+            actualizarTotales();
         }
 
-        // Cambiar el formato entre vertical y horizontal
-        function cambiarFormato() {
-            formatoVertical = !formatoVertical;
-            document.querySelector('.container').classList.toggle('vertical', formatoVertical);
-            document.querySelector('button[onclick="cambiarFormato()"]').textContent = formatoVertical ? 'Horizontal' : 'Vertical';
+        function evitarSaltoLinea(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                event.target.blur();
+            }
         }
 
-        // Guardar el puntaje en cookies/localStorage
-        function guardarPuntajes() {
-            localStorage.setItem('ronda', document.getElementById('ronda').textContent);
-            localStorage.setItem('j1-nombre', document.getElementById('j1-nombre').textContent);
-            localStorage.setItem('j2-nombre', document.getElementById('j2-nombre').textContent);
-            localStorage.setItem('j1-prim', document.getElementById('j1-prim').textContent);
-            localStorage.setItem('j1-sec', document.getElementById('j1-sec').textContent);
-            localStorage.setItem('j1-secM', document.getElementById('j1-secM').textContent);
-            localStorage.setItem('j1-cmd', document.getElementById('j1-cmd').textContent);
-            localStorage.setItem('j2-prim', document.getElementById('j2-prim').textContent);
-            localStorage.setItem('j2-sec', document.getElementById('j2-sec').textContent);
-            localStorage.setItem('j2-secM', document.getElementById('j2-secM').textContent);
-            localStorage.setItem('j2-cmd', document.getElementById('j2-cmd').textContent);
+        function reiniciar() {
+            localStorage.removeItem('estadoMarcador');
+            location.reload();
         }
 
-        // Cargar los puntajes desde localStorage al cargar la página
-        function cargarPuntajes() {
-            if (localStorage.getItem('ronda')) document.getElementById('ronda').textContent = localStorage.getItem('ronda');
-            if (localStorage.getItem('j1-nombre')) document.getElementById('j1-nombre').textContent = localStorage.getItem('j1-nombre');
-            if (localStorage.getItem('j2-nombre')) document.getElementById('j2-nombre').textContent = localStorage.getItem('j2-nombre');
-            if (localStorage.getItem('j1-prim')) document.getElementById('j1-prim').textContent = localStorage.getItem('j1-prim');
-            if (localStorage.getItem('j1-sec')) document.getElementById('j1-sec').textContent = localStorage.getItem('j1-sec');
-            if (localStorage.getItem('j1-secM')) document.getElementById('j1-secM').textContent = localStorage.getItem('j1-secM');
-            if (localStorage.getItem('j1-cmd')) document.getElementById('j1-cmd').textContent = localStorage.getItem('j1-cmd');
-            if (localStorage.getItem('j2-prim')) document.getElementById('j2-prim').textContent = localStorage.getItem('j2-prim');
-            if (localStorage.getItem('j2-sec')) document.getElementById('j2-sec').textContent = localStorage.getItem('j2-sec');
-            if (localStorage.getItem('j2-secM')) document.getElementById('j2-secM').textContent = localStorage.getItem('j2-secM');
-            if (localStorage.getItem('j2-cmd')) document.getElementById('j2-cmd').textContent = localStorage.getItem('j2-cmd');
-        }
-
-        // Llamar la función para cargar los puntajes al cargar la página
-        window.onload = cargarPuntajes;
-    </script>
+        document.addEventListener('DOMContentLoaded', cargarEstado);    </script>
 </body>
 </html>
