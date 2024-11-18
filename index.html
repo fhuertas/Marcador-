@@ -42,6 +42,15 @@
             align-items: center;
         }
 
+        .turno {
+            display: flex;
+            align-items: center;
+        }
+
+        .turno button {
+            margin-right: 10px;
+        }
+
         .ronda button {
             margin-left: 5px;
         }
@@ -51,6 +60,7 @@
             justify-content: space-between;
             gap: 20px;
             margin-top: 20px;
+            flex-wrap: wrap; /* Permite que se apilen verticalmente en pantallas pequeñas */
         }
 
         .jugador {
@@ -88,6 +98,10 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .vertical .jugadores {
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -97,10 +111,12 @@
             <div class="header-buttons">
                 <button onclick="reiniciar()">Reset</button>
                 <button onclick="copiarMarcador()">Compartir</button>
+                <button onclick="cambiarFormato()">Vertical</button>
             </div>
         </div>
         <div class="turno-ronda">
             <div class="turno">
+                <button onclick="cambiarTurno()">Cambiar</button>
                 <span>Turno: <strong id="turno">Jugador 1</strong></span>
             </div>
             <div class="ronda">
@@ -183,7 +199,26 @@
             </div>
         </div>
     </div>
+
     <script>
+        let turnoActual = 1;
+        let formatoVertical = false;
+
+        document.querySelectorAll('[contenteditable]').forEach(el => {
+            el.addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    el.blur();
+                }
+            });
+
+            el.addEventListener('input', () => {
+                if (el.id === 'j1-nombre' || el.id === 'j2-nombre') {
+                    actualizarTurno();
+                }
+            });
+        });
+
         function ajustarPuntaje(id, delta) {
             const elemento = document.getElementById(id);
             let valor = parseInt(elemento.textContent, 10) || 0;
@@ -198,17 +233,20 @@
             elemento.textContent = valor;
         }
 
+        function cambiarTurno() {
+            turnoActual = turnoActual === 1 ? 2 : 1;
+            actualizarTurno();
+        }
+
+        function actualizarTurno() {
+            const jugador = document.getElementById(`j${turnoActual}-nombre`).textContent;
+            document.getElementById('turno').textContent = jugador;
+        }
+
         function reiniciar() {
             if (confirm('¿Reiniciar el marcador?')) {
-                document.getElementById('j1-prim').textContent = 0;
-                document.getElementById('j1-sec').textContent = 0;
-                document.getElementById('j1-secM').textContent = 0;
-                document.getElementById('j1-cmd').textContent = 0;
-                document.getElementById('j2-prim').textContent = 0;
-                document.getElementById('j2-sec').textContent = 0;
-                document.getElementById('j2-secM').textContent = 0;
-                document.getElementById('j2-cmd').textContent = 0;
-                document.getElementById('ronda').textContent = 1;
+                document.querySelectorAll('.control span').forEach(el => el.textContent = '0');
+                document.getElementById('ronda').textContent = '1';
             }
         }
 
@@ -230,3 +268,19 @@ Puntos de mando: ${document.getElementById('j1-cmd').textContent}
 Misión principal: ${document.getElementById('j2-prim').textContent}
 Misiones secundarias: ${document.getElementById('j2-sec').textContent}
 Misión secreta: ${document.getElementById('j2-secM').textContent}
+Puntos de mando: ${document.getElementById('j2-cmd').textContent}
+`;
+
+            navigator.clipboard.writeText(marcador).then(() => {
+                alert('Marcador copiado al portapapeles.');
+            });
+        }
+
+        function cambiarFormato() {
+            formatoVertical = !formatoVertical;
+            document.querySelector('.container').classList.toggle('vertical', formatoVertical);
+            document.querySelector('button[onclick="cambiarFormato()"]').textContent = formatoVertical ? 'Horizontal' : 'Vertical';
+        }
+    </script>
+</body>
+</html>
