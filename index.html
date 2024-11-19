@@ -4,132 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marcador</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f4f4f4;
-        }
-
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 90%;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .header h1 {
-            margin: 0;
-            flex-grow: 1;
-        }
-
-        .header-buttons button {
-            margin-left: 10px;
-        }
-
-        .turno-ronda {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .turno {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .turno strong {
-            font-weight: bold;
-        }
-
-        .ronda {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .jugadores {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .jugador {
-            flex: 1;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-        }
-
-        .fila {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
-
-        .control {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-        
-        .control button {
-    width: 20px;  /* Ancho de los botones */
-    background-color: #007bff;
-    color: white;
-    padding: 5px;  /* Ajuste del padding para un diseño más compacto */
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.control button:hover {
-    background-color: #0056b3;
-}
-
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 5px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .miniaturas-btn {
-            background-color: grey;
-            color: white;
-        }
-
-        .miniaturas-btn.activo {
-            background-color: #007bff;
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 contenteditable="true" id="tituloMarcador" onkeypress="evitarSaltoLinea(event)">Título</h1>
+            <h1 contenteditable="true" id="tituloMarcador" onkeypress="evitarSaltoLinea(event)" onkeydown="guardarEstado()">Título</h1>
             <div class="header-buttons">
                 <button onclick="reiniciar()">Reset</button>
                 <button onclick="copiarMarcador()">Compartir</button>
@@ -151,37 +31,43 @@
         <div class="jugadores">
             <!-- Jugador 1 -->
             <div class="jugador">
-                <h2 contenteditable="true" id="j1-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)">Jugador 1</h2>
+                <h2 contenteditable="true" id="j1-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)" onkeydown="guardarEstado()">Jugador 1</h2>
                 <div class="fila">
                     <span>Puntos de mando:</span>
                     <div class="control">
                         <button onclick="ajustarPuntaje('j1-cmd', -1)">-</button>
                         <span id="j1-cmd">0</span>
-                        <button onclick="ajustarPuntaje('j1-cmd', 1)">     +    </button>
+                        <button onclick="ajustarPuntaje('j1-cmd', 1)">+</button>
                     </div>
-                </div>
+                </div> 
                 <div class="fila">
                     <span>Misión principal:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j1-prim', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j1-prim', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j1-prim', -1)">-1</button>
                         <span id="j1-prim">0</span>
-                        <button onclick="ajustarPuntaje('j1-prim', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j1-prim', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j1-prim', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
                     <span>Misiones secundarias:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j1-sec', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j1-sec', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j1-sec', -1)">-1</button>
                         <span id="j1-sec">0</span>
-                        <button onclick="ajustarPuntaje('j1-sec', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j1-sec', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j1-sec', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
                     <span>Misión secreta:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j1-secM', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j1-secM', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j1-secM', -1)">-1</button>
                         <span id="j1-secM">0</span>
-                        <button onclick="ajustarPuntaje('j1-secM', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j1-secM', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j1-secM', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
@@ -195,7 +81,7 @@
             </div>
             <!-- Jugador 2 -->
             <div class="jugador">
-                <h2 contenteditable="true" id="j2-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)">Jugador 2</h2>
+                <h2 contenteditable="true" id="j2-nombre" oninput="actualizarTurno()" onkeypress="evitarSaltoLinea(event)" onkeydown="guardarEstado()">Jugador 2</h2>
                 <div class="fila">
                     <span>Puntos de mando:</span>
                     <div class="control">
@@ -207,25 +93,31 @@
                 <div class="fila">
                     <span>Misión principal:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j2-prim', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j2-prim', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j2-prim', -1)">-1</button>
                         <span id="j2-prim">0</span>
-                        <button onclick="ajustarPuntaje('j2-prim', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j2-prim', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j2-prim', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
                     <span>Misiones secundarias:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j2-sec', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j2-sec', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j2-sec', -1)">-1</button>
                         <span id="j2-sec">0</span>
-                        <button onclick="ajustarPuntaje('j2-sec', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j2-sec', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j2-sec', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
                     <span>Misión secreta:</span>
                     <div class="control">
-                        <button onclick="ajustarPuntaje('j2-secM', -1)">-</button>
+                        <button onclick="ajustarPuntaje('j2-secM', -5)">-5</button>
+                        <button onclick="ajustarPuntaje('j2-secM', -1)">-1</button>
                         <span id="j2-secM">0</span>
-                        <button onclick="ajustarPuntaje('j2-secM', 1)">+</button>
+                        <button onclick="ajustarPuntaje('j2-secM', 1)">+1</button>
+                        <button onclick="ajustarPuntaje('j2-secM', 5)">+5</button>
                     </div>
                 </div>
                 <div class="fila">
@@ -239,158 +131,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let turnoJugador = 1;
-
-        function cambiarTurno() {
-            turnoJugador = turnoJugador === 1 ? 2 : 1;
-            actualizarTurno();
-        }
-
-        function actualizarTurno() {
-            const nombre = document.getElementById(`j${turnoJugador}-nombre`).textContent;
-            document.getElementById('turno').textContent = nombre;
-        }
-
-        function copiarMarcador() {
-            const titulo = document.getElementById('tituloMarcador').textContent;
-            const ronda = document.getElementById('ronda').textContent;
-
-            const jugador1 = obtenerDatosJugador(1);
-            const jugador2 = obtenerDatosJugador(2);
-
-            const texto = `
-==============================
-${titulo}
-==============================
-Turno de: ${jugador1.nombre}
-Ronda de batalla: ${ronda}
-
-------- ${jugador1.nombre} -------
-${jugador1.detalles}
-
-------- ${jugador2.nombre} -------
-${jugador2.detalles}
-`;
-
-            navigator.clipboard.writeText(texto.trim());
-        }
-
-        function obtenerDatosJugador(jugador) {
-            const nombre = document.getElementById(`j${jugador}-nombre`).textContent;
-            const cmd = document.getElementById(`j${jugador}-cmd`).textContent;
-            const prim = document.getElementById(`j${jugador}-prim`).textContent;
-            const sec = document.getElementById(`j${jugador}-sec`).textContent;
-            const secM = document.getElementById(`j${jugador}-secM`).textContent;
-            const mini = document.getElementById(`j${jugador}-mini`).textContent;
-            const total = document.getElementById(`j${jugador}-total`).textContent;
-
-            return {
-                nombre,
-                detalles: `Puntos de mando: ${cmd}
-Misión principal: ${prim}
-Misiones secundarias: ${sec}
-Misión secreta: ${secM}
-Miniaturas pintadas: ${mini}
-Total: ${total}`
-            };
-        }
-
-        function ajustarPuntaje(id, delta) {
-            const elemento = document.getElementById(id);
-            const valorActual = parseInt(elemento.textContent, 10);
-            const nuevoValor = Math.max(0, valorActual + delta);
-            elemento.textContent = nuevoValor;
-            actualizarTotales();
-            guardarEstado();
-        }
-
-        function ajustarRonda(delta) {
-            const rondaElemento = document.getElementById('ronda');
-            const valorActual = parseInt(rondaElemento.textContent, 10);
-            const nuevoValor = Math.max(1, valorActual + delta);
-            rondaElemento.textContent = nuevoValor;
-            guardarEstado();
-        }
-
-        function alternarMiniaturas(id) {
-            const boton = document.getElementById(id);
-            if (boton.textContent === "No") {
-                boton.textContent = "Sí";
-                boton.classList.add('activo');
-            } else {
-                boton.textContent = "No";
-                boton.classList.remove('activo');
-            }
-            actualizarTotales();
-            guardarEstado();
-        }
-
-        function actualizarTotales() {
-            for (let i = 1; i <= 2; i++) {
-                const prim = parseInt(document.getElementById(`j${i}-prim`).textContent, 10);
-                const sec = parseInt(document.getElementById(`j${i}-sec`).textContent, 10);
-                const secM = parseInt(document.getElementById(`j${i}-secM`).textContent, 10);
-                const miniaturas = document.getElementById(`j${i}-mini`).textContent === "Sí" ? 10 : 0;
-                const total = prim + sec + secM + miniaturas;
-                document.getElementById(`j${i}-total`).textContent = total;
-            }
-        }
-
-        function guardarEstado() {
-            const estado = {
-                ronda: document.getElementById('ronda').textContent,
-                jugadores: []
-            };
-
-            for (let i = 1; i <= 2; i++) {
-                estado.jugadores.push({
-                    nombre: document.getElementById(`j${i}-nombre`).textContent,
-                    cmd: document.getElementById(`j${i}-cmd`).textContent,
-                    prim: document.getElementById(`j${i}-prim`).textContent,
-                    sec: document.getElementById(`j${i}-sec`).textContent,
-                    secM: document.getElementById(`j${i}-secM`).textContent,
-                    mini: document.getElementById(`j${i}-mini`).textContent
-                });
-            }
-
-            localStorage.setItem('estadoMarcador', JSON.stringify(estado));
-        }
-
-        function cargarEstado() {
-            const estado = JSON.parse(localStorage.getItem('estadoMarcador'));
-            if (!estado) return;
-
-            document.getElementById('ronda').textContent = estado.ronda;
-
-            estado.jugadores.forEach((jugador, i) => {
-                const index = i + 1;
-                document.getElementById(`j${index}-nombre`).textContent = jugador.nombre;
-                document.getElementById(`j${index}-cmd`).textContent = jugador.cmd;
-                document.getElementById(`j${index}-prim`).textContent = jugador.prim;
-                document.getElementById(`j${index}-sec`).textContent = jugador.sec;
-                document.getElementById(`j${index}-secM`).textContent = jugador.secM;
-                const miniaturasBoton = document.getElementById(`j${index}-mini`);
-                miniaturasBoton.textContent = jugador.mini;
-                miniaturasBoton.classList.toggle('activo', jugador.mini === "Sí");
-            });
-
-            actualizarTotales();
-        }
-
-        function evitarSaltoLinea(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                event.target.blur();
-            }
-        }
-
-        function reiniciar() {
-            localStorage.removeItem('estadoMarcador');
-            location.reload();
-        }
-
-        document.addEventListener('DOMContentLoaded', cargarEstado);    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
